@@ -1,8 +1,10 @@
-from flask import Blueprint, render_template
-from exts import mail, r
+from flask import Blueprint, render_template,jsonify
+from exts import mail, r, db
 from flask_mail import Message
 from flask import request
 import string, random
+
+from models import EmailCaptcha
 
 bp = BLUEPRINT = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -16,7 +18,7 @@ def login():
 def register():
     return render_template("register.html")
 
-#
+# bp.route:而果没有指定methods参数，默认就是GET请求
 @bp.route('/captcha/email')
 def get_email_captcha():
     email = request.args.get('email')
@@ -27,8 +29,10 @@ def get_email_captcha():
     # 存储到redis，设置5分钟过期
     r.setex(f"email_captcha:{email}", 300, captcha_code)
     # 存储到数据库中
-
-    return 'success'
+    # email_captcha = EmailCaptcha(email=email, captcha_code=captcha_code)
+    # db.session.add(email_captcha)
+    # db.session.commit()
+    return jsonify({'code': 200, 'message': '', 'data': None})
 
 # /auth/mail/test
 @bp.route('/mail/test')

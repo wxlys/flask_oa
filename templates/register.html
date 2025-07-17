@@ -6,6 +6,7 @@
 {% block head %}
     <script src="{{ url_for('static', filename='jquery/jquery.3.6.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='js/jsdemo.js') }}"></script>#}
      <style>
         /* 样式优化 */
         #success-message {
@@ -27,7 +28,7 @@
 
 {% block body %}
 <!-- 在页面中添加一个用于显示成功消息的元素 -->
-{#<div id="success-message" style="display: none;"></div>#}
+{#<div id="success-message" style="display: block;"></div>#}
 
  <div class="row mt-4">
             <div class="col"></div>
