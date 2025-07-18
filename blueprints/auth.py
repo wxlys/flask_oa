@@ -1,11 +1,12 @@
-from flask import Blueprint, render_template,jsonify
+from flask import Blueprint, render_template, jsonify, redirect, url_for
+from huggingface_hub import User
 from exts import mail, r, db
 from flask_mail import Message
 from flask import request
 import string, random
 from .forms import RegisterForm
-
-from models import EmailCaptcha
+from models import EmailCaptcha, UserModle
+from werkzeug.security import generate_password_hash  # 哈希加密
 
 bp = BLUEPRINT = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -21,11 +22,18 @@ def register():
         return render_template("register.html")
     elif request.method == 'POST':
         form = RegisterForm(request.form)  # request.form 用户提交的数据
-        if form.validate():
-            return 'success'
+        if form.validate():  # 所有信息需要通过验证器验证才能进行存储
+            email = form.email.data
+            username = form.username.data
+            password = form.password.data
+            user = UserModle(email=email, username=username, password=generate_password_hash(password)) # 密码哈希加密存储
+            db.session.add(user)
+            db.session.commit()
+            # 注册成功，跳转登录页面   from flask import redirect 重新指向
+            return redirect(url_for('auth.login'))  # 将视图函数转换为url填充
         else:
             print(form.errors)
-            return 'fail'
+            return redirect(url_for('auth.register'))
 
 #
 @bp.route('/captcha/email')

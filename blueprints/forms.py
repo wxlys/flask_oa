@@ -9,7 +9,7 @@ class RegisterForm(wtforms.Form):
     captcha = wtforms.StringField(validators=[Length(min=6, max=6, message='验证码格式错误')])
     username = wtforms.StringField(validators=[Length(min=3,max=20, message='用户名格式错误')])
     password = wtforms.StringField(validators=[Length(min=6, max=20, message='密码格式错误')])
-    password_confirm = wtforms.StringField(validators=[EqualTo('password', message='密码格式错误')])
+    password_confirm = wtforms.StringField(validators=[EqualTo('password', message='两次密码不一致')])
 
     # 自定义验证:
     # 1.邮箱是否被注册
