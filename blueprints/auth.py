@@ -3,6 +3,7 @@ from exts import mail, r, db
 from flask_mail import Message
 from flask import request
 import string, random
+from .forms import RegisterForm
 
 from models import EmailCaptcha
 
@@ -14,11 +15,19 @@ def login():
     return render_template('login.html')
 
 
-@bp.route('/register')
+@bp.route('/register', methods=['GET', 'POST'])
 def register():
-    return render_template("register.html")
+    if request.method == 'GET':
+        return render_template("register.html")
+    elif request.method == 'POST':
+        form = RegisterForm(request.form)  # request.form 用户提交的数据
+        if form.validate():
+            return 'success'
+        else:
+            print(form.errors)
+            return 'fail'
 
-# bp.route:而果没有指定methods参数，默认就是GET请求
+#
 @bp.route('/captcha/email')
 def get_email_captcha():
     email = request.args.get('email')

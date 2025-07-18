@@ -1,28 +1,20 @@
 function bindEmailCaptchaClick() {
-    // 绑定点击事件   event发生位置
   $("#captcha-btn").click(function (event) {
-      // $this: 代表当前按钮的 jQuery 对象
+      // this: 代表当前按钮的 jQuery 对象
       var $this = $(this);
       // 阻止默认的事件
       event.preventDefault();
 
-      //var获取输入框的值
       var email = $("input[name='email']").val();
-      // print(email)
-
-      //ajax请求
       $.ajax({
           url: "/auth/captcha/email?email=" + email,
           method: "GET",
-          // 回调函数success
           success: function (result) {
-              console.log('AJAX 请求成功，返回结果：', result);
               var code = result['code'];
               if (code == 200) {
                   var countdown = 60;
                   // 开始倒计时之前，取消按钮的点击事件
                   $this.off("click");
-                  //setInterval每隔多少秒执行某个函数
                   var timer = setInterval(function () {
                       $this.text(countdown);
                       countdown -= 1;
