@@ -14,3 +14,5 @@ MAIL_PORT = 465
 MAIL_USERNAME = "2464840931@qq.com"
 MAIL_PASSWORD = "iywavfaqicnqeaig"
 MAIL_DEFAULT_SENDER = "2464840931@qq.com"
+
+SECRET_KEY = 'afwsnrjopajgbndtl'

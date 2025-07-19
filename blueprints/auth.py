@@ -1,19 +1,44 @@
-from flask import Blueprint, render_template, jsonify, redirect, url_for
+from flask import Blueprint, render_template, jsonify, redirect, url_for, session
 from huggingface_hub import User
 from exts import mail, r, db
 from flask_mail import Message
 from flask import request
 import string, random
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 from models import EmailCaptcha, UserModle
-from werkzeug.security import generate_password_hash  # 哈希加密
+from werkzeug.security import generate_password_hash, check_password_hash  # 哈希加密
 
 bp = BLUEPRINT = Blueprint('auth', __name__, url_prefix='/auth')
 
 # /auth/login
-@bp.route('/login')
+@bp.route('/login',methods=['GET','POST'])
 def login():
-    return render_template('login.html')
+    if request.method == "GET":
+        return render_template('login.html')
+    else:
+        form = LoginForm(request.form)
+        if form.validate():
+            email = form.email.data
+            password = form.password.data
+            user = UserModle.query.filter_by(email=email).first()
+            if not user:
+                # todo: 文本框提示或弹出消息
+                print("User not found")
+                return redirect(url_for('auth.login'))
+            if check_password_hash(user.password, password):
+                # cookie
+                # 1.其中不太适合存放大量的数据
+                # 2.一般用来存放授权等信息
+                # flask中的session是加密后存储在cookie中的
+                session['user_id'] = user.id
+                return redirect('/')
+            else:
+                # todo: 文本框提示或弹出消息
+                print("password incorrect")
+                return redirect(url_for('auth.login'))
+        else:
+            print(form.errors)
+            return redirect(url_for('auth.login'))
 
 
 @bp.route('/register', methods=['GET', 'POST'])
@@ -58,3 +83,8 @@ def mail_test():
     message = Message('Test Message', recipients=['2419519923@qq.com'], body='Test Message')
     mail.send(message)
     return 'Mail successfully sent'
+
+@bp.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('auth.login'))
