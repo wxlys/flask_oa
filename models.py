@@ -25,3 +25,17 @@ class Question(db.Model):
     # 外键
     author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     author = db.relationship(UserModle, backref='question')  # 反向引用
+
+class AnswerModel(db.Model):
+    __tablename__ = 'answer'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    content = db.Column(db.Text, nullable=False)
+    create_time = db.Column(db.DateTime, default=datetime.now)
+
+    # 外键
+    question_id = db.Column(db.Integer, db.ForeignKey('question.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    #
+    question = db.relationship(Question, backref=db.backref('answers', order_by=create_time.desc()))
+    author = db.relationship(UserModle, backref='user_answers')

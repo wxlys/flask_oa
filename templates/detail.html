@@ -19,9 +19,11 @@
         <p class="question-content">{{question.content}}</p>
         <hr>
         <h4 class="comment-group-title">评论（{{question.answers|length}}）：</h4>
+    {# 提交到哪个页面 #}
         <form action="{{url_for('qa.public_answer') }}" method="post">
             <div class="form-group">
                 <input type="text" placeholder="请填写评论" name="content" class="form-control">
+                {# 不显示的信息 #}
                 <input type="hidden" name="question_id" value="{{ question.id }}">
             </div>
             <div class="form-group" style="text-align: right;">
@@ -29,10 +31,11 @@
             </div>
         </form>
         <ul class="comment-group">
+        {# 网页从数据库中读取评论并显示 #}
             {% for answer in question.answers %}
             <li>
                 <div class="user-info">
-                    <img class="avatar" src="url_for('static',filename='image/avatar.jpg')" alt="">
+                    <img class="avatar" src="{{ url_for('static',filename='image/avatar.jpg') }}" alt="">
                     <span class="username">{{answer.author.username}}</span>
                     <span class="create-time">{{answer.create_time}}</span>
                 </div>

@@ -1,5 +1,5 @@
 import wtforms
-from wtforms.validators import Email, Length, EqualTo, DataRequired
+from wtforms.validators import Email, Length, EqualTo, InputRequired
 from models import UserModle, EmailCaptcha
 from exts import r, db
 
@@ -49,4 +49,7 @@ class QuestionForm(wtforms.Form):
     title = wtforms.StringField(validators=[Length(min=2, max=50, message='标题过短或过长')])
     content = wtforms.StringField(validators=[Length(min=3, message='内容过短')])
 
+class AnswerForm(wtforms.Form):
+    content = wtforms.StringField(validators=[Length(min=3, message='内容过短')])
+    question_id = wtforms.StringField(validators=[InputRequired(message='必须传入问题id')])
 

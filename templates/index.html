@@ -15,9 +15,12 @@
                     {% for question in questions %}
                         <li>
                         <div class="side-question">
-                            <img class="side-question-avatar" src="../static/images/avatar.jpg" alt="">
+                            {# 静态图片加载 #}
+                            <img class="side-question-avatar" src="{{ url_for('static', filename='/images/avatar.jpg') }}" alt="">
                         </div>
                         <div class="question-main">
+                            {# 点击列表跳转详情页 a href="{{url_for('qa.qa_detail',qa_id = question.id)}} #}
+                            {# 传递question.id #}
                             <div class="question-title"><a href="{{url_for('qa.qa_detail',qa_id = question.id)}}">{{question.title}}</a></div>
                             <div class="question-content">{{ question.content}}</div>
                             <div class="question-detail">
