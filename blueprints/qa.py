@@ -33,10 +33,18 @@ def public_question():
             print(form.errors)
             return redirect(url_for('qa.public_question'))
 
-
+# 搜索视图函数
 @bp.route('/qa/search')
 def search():
-    pass
+    # 获取用户要查询的内容
+    # /search?q=flask
+    # /search/<q>
+    # post, request.form
+    q = request.args.get('q') # 用户所提交的q的对应值
+
+    # 从数据库表中查询  title.contains(q) 标题包含q
+    question = Question.query.filter(Question.title.contains(q)).all()
+    return render_template('index.html', questions=question)
 
 @bp.route('/qa/qa_detail/<qa_id>')
 def qa_detail(qa_id):
