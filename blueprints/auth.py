@@ -51,12 +51,19 @@ def register():
             email = form.email.data
             username = form.username.data
             password = form.password.data
-            user = UserModle(email=email, username=username, password=generate_password_hash(password)) # 密码哈希加密存储
-            db.session.add(user)
-            db.session.commit()
-            # 注册成功，跳转登录页面   from flask import redirect 重新指向
-            return redirect(url_for('auth.login'))  # 将视图函数转换为url填充
+            # 创建用户并保存到数据库
+            try:
+                user = UserModle(email=email, username=username, password=generate_password_hash(password)) # 密码哈希加密存储
+                db.session.add(user)
+                db.session.commit()
+                # 注册成功，跳转登录页面   from flask import redirect 重新指向
+                return redirect(url_for('auth.login'))  # 将视图函数转换为url填充
+            except Exception as e:
+                db.session.rollback()   # 出错时回滚
+                print(f"注册出错：{e}")
+                return redirect(url_for('auth.register'))
         else:
+            # 表单验证失败
             print(form.errors)
             return redirect(url_for('auth.register'))
 
